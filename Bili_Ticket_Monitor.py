@@ -8,25 +8,25 @@ import os
 def clear_screen():
     if os.name == 'nt':  # Windows系统
         os.system('cls')
-    else:               # Mac和Linux系统
+    else:  # Mac和Linux系统
         os.system('clear')
 
-# 初始化colorama库
 init(autoreset=True)
 
+# 从API获取票务状态的函数
 def fetch_ticket_status(url, headers):
     try:
         response = requests.get(url, headers=headers)
-        response.raise_for_status()  
+        response.raise_for_status()  # 检查响应状态码是否为200
     except requests.RequestException as e:
-        print(f"请求错误: {e}")
+        print(f"请求错误(可能被风控): {e}")
         return None
 
     # 解析响应数据
     data = response.json()
     tickets = data.get('data', {}).get('screen_list', [])
     if not tickets:
-        print("请检查ID输入是否正确")
+        print("请检查票务ID填写是否正确")
         return None
 
     current_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
@@ -34,10 +34,10 @@ def fetch_ticket_status(url, headers):
 
     table = []
     for screen in tickets:
-        screen_name = screen.get('screen_name')  
+        screen_name = screen.get('screen_name', '未知场次')  
         for ticket in screen.get('ticket_list', []):
             desc = ticket['desc'] if ticket['desc'] != "普通票" else "普通票"
-            sale_status = ticket.get('sale_flag', {}).get('display_name')  
+            sale_status = ticket.get('sale_flag', {}).get('display_name', '未知状态')  
             table.append([screen_name + desc, sale_status])
 
     return table
@@ -62,8 +62,8 @@ def print_ticket_table(table):
         status = Fore.GREEN + row[1].ljust(max_status_len) + Style.RESET_ALL
         print(f"{desc}\t{status}")
 
-# 主程序循环
-url = "https://show.bilibili.com/api/ticket/project/getV2?version=134&id=替换为票务ID"  
+# 主程序循环，获取并显示票务信息
+url = "https://show.bilibili.com/api/ticket/project/getV2?version=134&id=实际票务ID"  # 替换为实际票务ID
 headers = {
     "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.36"
 }
@@ -72,5 +72,5 @@ while True:
     table = fetch_ticket_status(url, headers)
     if table:
         print_ticket_table(table)
-    time.sleep(1)  # 可以根据需要调整请求的频率，太快容易被412风控
+    time.sleep(1)  # 可以根据需要调整请求的频率，太快可以被412风控
     clear_screen()
