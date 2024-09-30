@@ -85,17 +85,18 @@ if new_table:
     last_table = new_table
 
 # 进入主循环，持续刷新时间
-while True:
-    if requests.exceptions.RequestException:
-        pass
-    else:
-        # 显示当前时间，并刷新时间显示（不清屏票务信息）
-        clear_screen_line()
-        display_time()
+    while True:
+        try:
+            # 显示当前时间，并刷新时间显示（不清屏票务信息）
+            clear_screen_line()
+            display_time()
 
-        # 每隔 2 秒刷新一次票务信息
-        if time.time() % 2 < 1:
-            new_table = fetch_ticket_status(url, headers)
-            if new_table and has_table_changed(last_table, new_table):
-                print_ticket_table(new_table)  # 重新打印票务表格
-                last_table = new_table
+            # 每隔 2 秒刷新一次票务信息
+            if time.time() % 2 < 1:
+                new_table = fetch_ticket_status(url, headers)
+                if new_table and has_table_changed(last_table, new_table):
+                    print_ticket_table(new_table)  # 重新打印票务表格
+                    last_table = new_table
+        except requests.exceptions.RequestException as e:
+            print(f"Error fetching ticket status: {e}")
+            break  # 停止循环
