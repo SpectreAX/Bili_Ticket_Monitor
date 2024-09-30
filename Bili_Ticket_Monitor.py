@@ -90,7 +90,8 @@ if new_table:
             # 显示当前时间，并刷新时间显示（不清屏票务信息）
             clear_screen_line()
             display_time()
-
+            # 短暂休眠，保持时间流畅刷新
+            time.sleep(1)
             # 每隔 2 秒刷新一次票务信息
             if time.time() % 2 < 1:
                 new_table = fetch_ticket_status(url, headers)
