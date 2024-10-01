@@ -21,7 +21,6 @@
  pip install json
  pip install datetime
  pip install colorama
- pip install os
 ```
 ### 二、配置
 - 如图，将你需要监测的展会ID填入对应的地方，其余配置根据文件内注释可自行更改
