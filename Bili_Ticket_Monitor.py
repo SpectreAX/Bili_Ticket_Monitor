@@ -11,7 +11,7 @@ def clear_screen_line():
 # 初始化颜色输出
 init(autoreset=True)
 
-# 获取票务状态的函数
+# 获取票务状态
 def fetch_ticket_status(url, headers):
     try:
         response = requests.get(url, headers=headers, timeout=100)  # 设置超时时间，避免长时间无响应
@@ -39,7 +39,6 @@ def fetch_ticket_status(url, headers):
         print(f"请求错误(可能被风控): {e}")
         return None
 
-# 打印票务表格的函数
 def print_ticket_table(table):
     if not table:
         return
@@ -91,7 +90,7 @@ if new_table:
             clear_screen_line()
             display_time()
             # 短暂休眠，保持时间流畅刷新
-            time.sleep(1)
+            time.sleep(0.9)
             # 每隔 2 秒刷新一次票务信息
             if time.time() % 2 < 1:
                 new_table = fetch_ticket_status(url, headers)
