@@ -24,12 +24,12 @@
  pip install os
 ```
 ### 二、配置
-- 如图，将你需要监测的展会ID填入对应的地方
+- 如图，将你需要监测的展会ID填入对应的地方，其余配置根据文件内注释可自行更改
 ![image](https://github.com/user-attachments/assets/7a1cf2a8-ccca-44ab-acd7-4d6abdbf99c2)
 
 ### 三、运行
 - 配置完成后直接运行`Bili_Ticket_Monitor.py`
 
 ### 四、注意事项
-- 如果请求速度太快了就可能会被业务风控，如图是典型的412风控：
+- 如果请求速度太快了可能会被业务风控，如图是典型的412风控：
 ![image](https://github.com/user-attachments/assets/43b50d6a-5ac0-405d-9c2c-dfbe8a8861cb)
