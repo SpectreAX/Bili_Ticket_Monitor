@@ -2,7 +2,6 @@ import requests
 import time
 from datetime import datetime
 from colorama import Fore, Style, init
-import os
 
 # 清屏函数，只清理屏幕的时间行，保留票务信息
 def clear_screen_line():
