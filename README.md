@@ -29,5 +29,4 @@
 - 配置完成后直接运行`Bili_Ticket_Monitor.py`
 
 ### 四、注意事项
-- 请求间隔时间太短可能会被业务风控，如图是典型的412风控：
-![image](https://github.com/user-attachments/assets/43b50d6a-5ac0-405d-9c2c-dfbe8a8861cb)
+- 请求间隔时间太短可能会被业务风控
