@@ -21,8 +21,9 @@
  pip install colorama
 ```
 ### 二、配置
-- 如图，将你需要监测的票务ID填入对应的地方，其余配置根据文件内注释可自行更改
-![image](https://github.com/user-attachments/assets/d909f895-05bb-4cd7-ab90-8c7348f38251)
+- 如图，将你需要监测的票务ID填入对应的地方，其余配置根据文件内注释可自行更改，不让改的地方请别乱改
+![image](https://github.com/user-attachments/assets/617230f6-cad2-461d-8787-9ce46294f494)
+
 
 
 ### 三、运行
