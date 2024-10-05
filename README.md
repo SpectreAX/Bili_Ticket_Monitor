@@ -16,7 +16,6 @@
  ```shell
  pip install requests
  pip install time
- pip install json
  pip install datetime
  pip install colorama
 ```
