@@ -6,7 +6,7 @@ from tabulate import tabulate
 from wcwidth import wcswidth
 
 # 可以修改的东西
-TICKET_ID = "85939"  # 请替换为实际票务ID
+TICKET_ID = "请替换这里"  # 请替换为实际票务ID
 TICKET_REFRESH_INTERVAL = 2  # 票务信息刷新间隔，1秒以下可能会被风控
 TIMEOUT = 100  # 请求超时时间，根据网络状况设置
 
@@ -75,8 +75,7 @@ def print_ticket_table(name, table):
     # 用tabulate库打印
     print(tabulate(all_data, tablefmt='plain'))
 
-def calculate_display_width(text):
-    """计算字符串的真实显示宽度"""
+def calculate_display_width(text):    #计算字符串的真实显示宽度
     return sum(wcswidth(char) for char in text)
 
 
