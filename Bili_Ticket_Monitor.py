@@ -5,6 +5,8 @@ from colorama import Fore, Style, init
 from tabulate import tabulate
 from wcwidth import wcswidth
 
+#Powered by TaiMiao
+
 # 可以修改的东西
 TICKET_ID = "请替换这里"  # 请替换为实际票务ID
 TICKET_REFRESH_INTERVAL = 2  # 票务信息刷新间隔，1秒以下可能会被风控
@@ -31,7 +33,7 @@ def fetch_ticket_status(url, headers):
         name = data.get('data', {}).get('name', '')
 
         if not tickets:
-            print(Fore.RED + "数据为空，请检查票务ID" + Style.RESET_ALL)
+            print(Fore.RED + "数据为空，请检查票务ID")
             return None, None
 
         table = [
@@ -44,10 +46,10 @@ def fetch_ticket_status(url, headers):
         return name, table
 
     except requests.exceptions.RequestException as e:
-        if e.response and e.response.status_code == 412:
-            print(Fore.RED + "IP被风控，请等待一段时间后继续，否则将会引发更大的问题" + Style.RESET_ALL)
+        if e.response or e.response.status_code == 412:
+            print(Fore.RED + "IP被风控，请等待一段时间后继续，否则将会引发更大的问题" )
         else:
-            print(Fore.RED + f"请求错误(请检查网络连接): {e}" + Style.RESET_ALL)
+            print(Fore.RED + f"请求错误(请检查网络连接): {e}")
         return None, None
 
 def print_ticket_table(name, table):
@@ -61,7 +63,7 @@ def print_ticket_table(name, table):
     max_display_desc_len = calculate_display_width(max([row[0] for row in table], key=len).replace('）', ')').replace('（', '(').replace('：', ':'))
 
     print(f"{Style.BRIGHT}{name}")
-    print(f"{Fore.CYAN}{'票种'.ljust(max_display_desc_len)}{'状态'.rjust(max_status_len)}{Style.RESET_ALL}")
+    print(f"{Fore.CYAN}{'票种'.ljust(max_display_desc_len)}{'状态'.rjust(max_status_len)}")
     print('-' * (max_desc_len + max_status_len + 16))
 
     all_data = []
@@ -69,17 +71,18 @@ def print_ticket_table(name, table):
         desc = row[0]
         desc = desc.replace('）', ')').replace('（', '(').replace('：', ':')
         status = row[1]
-        status_colored = color_status(status, max_status_len)
+        status_colored = color_status(status)
         all_data.append([desc, status_colored])
 
     # 用tabulate库打印
     print(tabulate(all_data, tablefmt='plain'))
 
-def calculate_display_width(text):    #计算字符串的真实显示宽度
+    #计算字符串的真实显示宽度
+def calculate_display_width(text):
     return sum(wcswidth(char) for char in text)
 
 
-def color_status(status, max_status_len):
+def color_status(status):
     color_map = {
         "已售罄": Fore.RED,
         "已停售": Fore.RED,
@@ -96,7 +99,7 @@ def has_table_changed(old_table, new_table):
 
 def display_time():
     current_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-    print(f"{Fore.GREEN}当前时间: {current_time}{Style.RESET_ALL}")
+    print(f"{Fore.GREEN}当前时间: {current_time}")
 
 def main():
     last_table = None
@@ -124,12 +127,12 @@ def main():
             time.sleep(SLEEP_INTERVAL)
 
         except requests.exceptions.RequestException as e:
-            if e.response and e.response.status_code == 412:
-                print(Fore.RED + "IP被风控，请等待一段时间后继续，否则将会引发更大的问题" + Style.RESET_ALL)
+            if e.response or e.response.status_code == 412:
+                print(Fore.RED + "IP被风控，请等待一段时间后继续，否则将会引发更大的问题")
             else:
-                print(Fore.RED + f"请求错误(请检查网络连接): {e}" + Style.RESET_ALL)
+                print(Fore.RED + f"请求错误(请检查网络连接): {e}")
             break  # 出现错误时停止循环
 
 if __name__ == "__main__":
     main()
-    input("按回车键退出...")  # 等待用户输入以退出
+    input("按回车键退出...")
