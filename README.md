@@ -38,7 +38,7 @@
 
 ### 四、注意事项
 - 请求间隔时间太短可能会被业务风控
-- 
+
 ## Star History
 
 [![Star History Chart](https://api.star-history.com/svg?repos=TaiMiao/Bili_Ticket_Monitor&type=Date)](https://star-history.com/#TaiMiao/Bili_Ticket_Monitor&Date)
