@@ -5,7 +5,7 @@ from colorama import Fore, Style, init
 from tabulate import tabulate
 from wcwidth import wcswidth
 
-#Powered by TaiMiao
+#By TaiMiao
 
 # 可以修改的东西
 TICKET_ID = "请替换这里"  # 请替换为实际票务ID
