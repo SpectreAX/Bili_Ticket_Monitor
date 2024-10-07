@@ -5,7 +5,7 @@ from colorama import Fore, Style, init
 from tabulate import tabulate
 from wcwidth import wcswidth
 
-#By TaiMiao
+# By TaiMiao
 
 # 可以修改的东西
 TICKET_ID = "请替换这里"  # 请替换为实际票务ID
@@ -13,8 +13,7 @@ TICKET_REFRESH_INTERVAL = 2  # 票务信息刷新间隔，1秒以下可能会被
 TIMEOUT = 100  # 请求超时时间，根据网络状况设置
 
 # 不要动下面的东西！！！
-BASE_URL = "https://show.bilibili.com/api/ticket/project/getV2?version=134&id="
-URL = f"{BASE_URL}{TICKET_ID}"  # 拼接完整的URL
+BASE_URL = f"https://show.bilibili.com/api/ticket/project/getV2?version=134&id={TICKET_ID}"  # 拼接完整的URL
 SLEEP_INTERVAL = 0.5  # 时间显示刷新间隔
 HEADERS = {"User-Agent": "Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Mobile Safari/537.36"}
 
@@ -28,26 +27,23 @@ def fetch_ticket_status(url, headers):
     try:
         response = requests.get(url, headers=headers, timeout=TIMEOUT)
         response.raise_for_status()
-        data = response.json()
-        tickets = data.get('data', {}).get('screen_list', [])
-        name = data.get('data', {}).get('name', '')
+        data = response.json().get('data', {})
+        tickets = data.get('screen_list', [])
+        name = data.get('name', '')
 
         if not tickets:
             print(Fore.RED + "数据为空，请检查票务ID")
             return None, None
 
-        table = [
-            [ticket.get('screen_name', '') + ticket.get('desc', '').replace("普通票", "普通票"),
-             ticket.get('sale_flag', {}).get('display_name', '')]
-            for screen in tickets
-            for ticket in screen.get('ticket_list', [])
-        ]
+        table = [[ticket.get('screen_name', '') + ticket.get('desc', '').replace("普通票", "普通票"),
+                  ticket.get('sale_flag', {}).get('display_name', '')]
+                 for screen in tickets for ticket in screen.get('ticket_list', [])]
 
         return name, table
 
     except requests.exceptions.RequestException as e:
         if e.response or e.response.status_code == 412:
-            print(Fore.RED + "IP被风控，请等待一段时间后继续，否则将会引发更大的问题" )
+            print(Fore.RED + "IP被风控，请等待一段时间后继续，否则将会引发更大的问题")
         else:
             print(Fore.RED + f"请求错误(请检查网络连接): {e}")
         return None, None
@@ -60,27 +56,18 @@ def print_ticket_table(name, table):
     max_status_len = max(len(row[1]) for row in table)
 
     # 计算真实显示字符长度
-    max_display_desc_len = calculate_display_width(max([row[0] for row in table], key=len).replace('）', ')').replace('（', '(').replace('：', ':'))
+    max_display_desc_len = calculate_display_width(max(table, key=lambda x: len(x[0]))[0].replace('）', ')').replace('（', '(').replace('：', ':'))
 
     print(f"{Style.BRIGHT}{name}")
     print(f"{Fore.CYAN}{'票种'.ljust(max_display_desc_len)}{'状态'.rjust(max_status_len)}")
     print('-' * (max_desc_len + max_status_len + 16))
 
-    all_data = []
-    for row in table:
-        desc = row[0]
-        desc = desc.replace('）', ')').replace('（', '(').replace('：', ':')
-        status = row[1]
-        status_colored = color_status(status)
-        all_data.append([desc, status_colored])
-
     # 用tabulate库打印
+    all_data = [[row[0].replace('）', ')').replace('（', '(').replace('：', ':'), color_status(row[1])] for row in table]
     print(tabulate(all_data, tablefmt='plain'))
 
-    #计算字符串的真实显示宽度
 def calculate_display_width(text):
     return sum(wcswidth(char) for char in text)
-
 
 def color_status(status):
     color_map = {
@@ -91,19 +78,17 @@ def color_status(status):
         "暂时售罄": Fore.YELLOW,
         "预售中": Fore.GREEN,
     }
-    color = color_map.get(status, Fore.WHITE)
-    return color + status + Style.RESET_ALL
+    return color_map.get(status, Fore.WHITE) + status + Style.RESET_ALL
 
 def has_table_changed(old_table, new_table):
     return old_table != new_table
 
 def display_time():
-    current_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-    print(f"{Fore.GREEN}当前时间: {current_time}")
+    print(f"{Fore.GREEN}当前时间: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
 
 def main():
     last_table = None
-    name, new_table = fetch_ticket_status(URL, HEADERS)
+    name, new_table = fetch_ticket_status(BASE_URL, HEADERS)
 
     if new_table is None:
         return  # 如果没有数据则退出
@@ -114,7 +99,7 @@ def main():
     while True:
         try:
             if time.time() % TICKET_REFRESH_INTERVAL < SLEEP_INTERVAL:
-                name, new_table = fetch_ticket_status(URL, HEADERS)
+                name, new_table = fetch_ticket_status(BASE_URL, HEADERS)
                 if new_table is None:
                     break  # 如果没有新的数据则退出
 
