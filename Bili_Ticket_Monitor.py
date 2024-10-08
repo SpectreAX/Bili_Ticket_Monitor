@@ -8,7 +8,7 @@ from wcwidth import wcswidth
 # By TaiMiao
 
 # 可以修改的东西
-TICKET_ID = "请替换这里"  # 请替换为实际票务ID
+TICKET_ID = input("请输入Ticket ID: ")  # 请替换为实际票务ID
 TICKET_REFRESH_INTERVAL = 2  # 票务信息刷新间隔，1秒以下可能会被风控
 TIMEOUT = 100  # 请求超时时间，根据网络状况设置
 
